@@ -83,9 +83,14 @@ public class MainActivity extends ActionBarActivity {
                 } while (c.moveToNext());
 
                 FArrayList<SMS> fArrSMS = new FArrayList<>(arrSMS);
-                FArrayList<String> fArrInfo = SMSInboxUtil.extractInfo( SMSInboxUtil.filterInvalidSMS(fArrSMS) ).map(SMSFilter.onToString());
-                ArrayAdapter adapter = new ArrayAdapter<String>(this, R.layout.activity_listview, fArrInfo.arrList);
+                FArrayList<SMSInfo> fArrInfo = SMSInboxUtil.extractInfo( SMSInboxUtil.filterInvalidSMS(fArrSMS) );//.map(SMSFilter.onToString());
+                SMSInfo[] arr = new SMSInfo[fArrInfo.arrList.size()];
+                arr = fArrInfo.arrList.toArray(arr);
+                SMSInfoAdapter adapter = new SMSInfoAdapter(this, R.layout.detailed_info, arr);
                 lvSMSMsgs.setAdapter(adapter);
+
+                //ArrayAdapter adapter = new ArrayAdapter<String>(this, R.layout.activity_listview, fArrInfo.arrList);
+                //lvSMSMsgs.setAdapter(adapter);
 
             } else {
                 // empty box, no SMS
