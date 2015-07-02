@@ -2,6 +2,8 @@ package com.ankush.sneakalook;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,23 +35,27 @@ public class SMSInfoAdapter extends ArrayAdapter<SMSInfo> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View row = convertView;
-        SMSInfoHolder holder = null;
-        if (row == null) {
             LayoutInflater inflater = ((Activity) context).getLayoutInflater();
             row = inflater.inflate(layoutResourceId, parent, false);
 
-            holder = new SMSInfoHolder();
-            holder.amt = (TextView) row.findViewById(R.id.amt);
-            holder.place = (TextView) row.findViewById(R.id.place);
-            holder.date = (TextView) row.findViewById(R.id.date);
-        } else {
-            holder = (SMSInfoHolder) row.getTag();
-        }
+            TextView amt = (TextView) row.findViewById(R.id.amt);
+            TextView  place = (TextView) row.findViewById(R.id.place);
+            TextView date = (TextView) row.findViewById(R.id.date);
 
         SMSInfo smsinfo = data[position];
-        holder.amt.setText(smsinfo.getNumber() + "");
-        holder.place.setText(smsinfo.getPlaceOfTransaction());
-        holder.date.setText(smsinfo.getDate().toString());
+        amt.setText(smsinfo.getNumber() + "");
+        place.setText(smsinfo.getPlaceOfTransaction());
+        date.setText(SMSFilter.df.format(smsinfo.getDate()));
+        if(position%2==0) {
+            row.setBackgroundColor(0xffeeeeff);
+            place.setTextColor(0xff666666);
+            date.setTextColor(0xff6666ff);
+            amt.setTextColor(0xffff6666);
+        } else {
+            place.setTextColor(0xff888888);
+            date.setTextColor(0xff8888ff);
+            amt.setTextColor(0xffff7777);
+        }
         return row;
     }
 }
