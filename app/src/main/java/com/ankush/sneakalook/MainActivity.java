@@ -23,14 +23,15 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import android.util.Log;
+import android.widget.Toast;
 
-import com.jjoe64.graphview.GraphView;
-import com.jjoe64.graphview.GridLabelRenderer;
-import com.jjoe64.graphview.ValueDependentColor;
-import com.jjoe64.graphview.Viewport;
-import com.jjoe64.graphview.series.BarGraphSeries;
-import com.jjoe64.graphview.series.DataPoint;
-import com.jjoe64.graphview.series.LineGraphSeries;
+import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.utils.ColorTemplate;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -46,7 +47,7 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         try {
-            ListView lvSMSMsgs = (ListView) findViewById(R.id.SMSMsgs);
+            final ListView lvSMSMsgs = (ListView) findViewById(R.id.SMSMsgs);
             Uri inboxURI = Uri.parse("content://sms/inbox");
             String[] reqCols =
                     new String[] {
@@ -98,42 +99,35 @@ public class MainActivity extends ActionBarActivity {
                 SMSInfoAdapter adapter = new SMSInfoAdapter(this, R.layout.detailed_info, arr);
                 lvSMSMsgs.setAdapter(adapter);
 
-                //ArrayAdapter adapter = new ArrayAdapter<String>(this, R.layout.activity_listview, fArrInfo.arrList);
-                //lvSMSMsgs.setAdapter(adapter);
-                TextView tw = ( TextView) findViewById(R.id.textView);
-                GraphView graph = (GraphView) findViewById(R.id.graph);
-                DataPoint[] dp = new DataPoint[20];
+                final TextView tw = ( TextView) findViewById(R.id.textView);
+                BarChart graph = (BarChart) findViewById(R.id.graph);
+                ArrayList<BarEntry> entries = new ArrayList<>();
                 int lSize = fArrInfo.arrList.size();
-                double max = 0;
-                for( int i = 0; i<= 19;i++) {
-                    double num = fArrInfo.arrList.get(i ).getNumber();
-                    max = (num>max) ? num : max;
-                    dp[i] = new DataPoint( i+1, num);
+                ArrayList<String> labels = new ArrayList<String>();
+                for( int i = 0; i< lSize;i++) {
+                    SMSInfo smsInfo = fArrInfo.arrList.get(i );
+                    double num = smsInfo.getNumber();
+                    entries.add(new BarEntry((float)num,i));
+                    labels.add(SMSFilter.df.format(smsInfo.getDate()));
                 }
 
-
-                final double maxY = ( 1 + (int)(max/1000.0))*1000.0;
                 //fArrInfo.take(10).zipWithIndex().map(SMSFilter.toDataPoint()).arrList.toArray(dp);
-                BarGraphSeries<DataPoint> series = new BarGraphSeries<DataPoint>(dp);
-                series.setSpacing(20);
-                final Viewport vp = graph.getViewport();
-                vp.setYAxisBoundsManual(true);
-                vp.setScrollable(true);
-                vp.setMaxY(maxY);
-                series.setValueDependentColor(new ValueDependentColor<DataPoint>() {
-                    @Override
-                    public int get(DataPoint data) {
-                        return Color.rgb(
-                                100 + (int) Math.abs(data.getY() * 155 / maxY),
-                                75,
-                                75
-                        );
-                    }
-                });
-                GridLabelRenderer gLR = graph.getGridLabelRenderer();
-                gLR.setHighlightZeroLines(false);
-                gLR.setNumHorizontalLabels(10);
-                graph.addSeries(series);
+                BarDataSet series = new BarDataSet(entries, "Withdrawals");
+                BarData data = new BarData(labels, series);
+                series.setDrawValues(false);
+                graph.setData(data) ;
+                graph.setDescription("");
+                series.setColor(0xffff6666);
+                XAxis xaxis = graph.getXAxis();
+                xaxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+                xaxis.setDrawGridLines(false);
+                YAxis yaxisRight = graph.getAxisRight();
+                yaxisRight.setDrawAxisLine(false);
+                yaxisRight.setDrawLabels(false);
+                YAxis yaxisLeft = graph.getAxisLeft();
+                yaxisLeft.setGridColor(0xffaaaaaa);
+                series.setBarSpacePercent(20);
+                graph.setOnChartValueSelectedListener(new SMSChartValueSelectedListener(lvSMSMsgs, tw));
             } else {
                 // empty box, no SMS
             }

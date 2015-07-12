@@ -2,8 +2,6 @@ package com.ankush.sneakalook;
 
 import android.provider.ContactsContract;
 
-import com.jjoe64.graphview.series.DataPoint;
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -62,15 +60,6 @@ public class SMSFilter {
                 String debitInfo =
                 smsInfo.isDebit() ? "-" : "+";
                 return (debitInfo+smsInfo.getNumber() + " on " + df.format(smsInfo.getTransactionDate()) + " at " + smsInfo.getPlaceOfTransaction());
-            }
-        };
-    }
-
-    public static IConverter<Indexed<SMSInfo>, DataPoint> toDataPoint() {
-        return new IConverter<Indexed<SMSInfo>, DataPoint>() {
-            @Override
-            public DataPoint apply(Indexed<SMSInfo> smsInfoIndexed) {
-                return new DataPoint(smsInfoIndexed.index, smsInfoIndexed.t.getNumber());
             }
         };
     }

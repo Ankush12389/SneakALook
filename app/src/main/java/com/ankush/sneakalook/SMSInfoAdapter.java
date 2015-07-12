@@ -42,6 +42,8 @@ public class SMSInfoAdapter extends ArrayAdapter<SMSInfo> {
             TextView  place = (TextView) row.findViewById(R.id.place);
             TextView date = (TextView) row.findViewById(R.id.date);
 
+
+
         SMSInfo smsinfo = data[position];
         amt.setText(smsinfo.getNumber() + "");
         place.setText(SMSInboxUtil.toCamelCase(smsinfo.getPlaceOfTransaction()));
@@ -56,6 +58,6 @@ public class SMSInfoAdapter extends ArrayAdapter<SMSInfo> {
             date.setTextColor(0xff8888ff);
             amt.setTextColor(0xffff7777);
         }
-        return row;
+            return row;
     }
 }

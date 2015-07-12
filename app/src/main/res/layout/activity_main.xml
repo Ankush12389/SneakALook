@@ -29,11 +29,11 @@
         android:layout_toRightOf="@+id/icon"
         android:layout_toEndOf="@+id/icon" />
 
-    <com.jjoe64.graphview.GraphView
+    <com.github.mikephil.charting.charts.BarChart
+        android:id="@+id/graph"
         android:layout_width="match_parent"
-        android:layout_height="200dip"
         android:layout_below="@+id/textView"
-        android:id="@+id/graph" />
+        android:layout_height="200dip" />
 
     <ListView
         android:layout_width="wrap_content"

@@ -54,4 +54,8 @@ public class SMSInfo implements Info {
     public String getSource(){
         return source;
     }
+    @Override
+    public String toString(){
+        return ( getNumber() + " at " + getPlaceOfTransaction() + " on " +  getDate() );
+    }
 }
