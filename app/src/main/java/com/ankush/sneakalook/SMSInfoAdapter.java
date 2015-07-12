@@ -44,14 +44,14 @@ public class SMSInfoAdapter extends ArrayAdapter<SMSInfo> {
 
         SMSInfo smsinfo = data[position];
         amt.setText(smsinfo.getNumber() + "");
-        place.setText(smsinfo.getPlaceOfTransaction());
+        place.setText(SMSInboxUtil.toCamelCase(smsinfo.getPlaceOfTransaction()));
         date.setText(SMSFilter.df.format(smsinfo.getDate()));
         if(position%2==0) {
-            row.setBackgroundColor(0xffeeeeff);
             place.setTextColor(0xff666666);
             date.setTextColor(0xff6666ff);
             amt.setTextColor(0xffff6666);
         } else {
+            row.setBackgroundColor(0xffeeeeff);
             place.setTextColor(0xff888888);
             date.setTextColor(0xff8888ff);
             amt.setTextColor(0xffff7777);

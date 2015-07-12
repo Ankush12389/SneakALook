@@ -1,6 +1,8 @@
 package com.ankush.sneakalook;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Ankush on 28-06-2015.
@@ -9,6 +11,9 @@ public class FArrayList<E>  {
     ArrayList<E> arrList;
     public FArrayList( ArrayList<E> argArrList ) {
         arrList = new ArrayList<>(argArrList);
+    }
+    public FArrayList( ) {
+        arrList = new ArrayList<>();
     }
 
     public FArrayList<E> filter( IPredicate<E> pred ) {
@@ -49,4 +54,37 @@ public class FArrayList<E>  {
         return ret;
     }
 
+    public FArrayList<Indexed<E>> zipWithIndex() {
+        return this.fold(new FArrayList<Indexed<E>>(), new ZipWithIndex<E>());
+    }
+
+    public<T> Map<T,FArrayList<E>> groupBy( IConverter<E, T> predFunc ) {
+        Map<T, FArrayList<E>> ret = new HashMap<T, FArrayList<E>>();
+
+        for(E e: arrList) {
+            T pred = predFunc.apply(e);
+            if(ret.containsKey(pred)) {
+                FArrayList<E> grouped = ret.get(pred);
+                grouped.arrList.add(e);
+                FArrayList<E> newGrouped = new FArrayList<E>(grouped.arrList);
+                ret.put(pred, newGrouped);
+            } else {
+                ArrayList<E> newArr = new ArrayList<E>();
+                newArr.add(e);
+                ret.put(pred, new FArrayList<E>(newArr ));
+            }
+        }
+
+        return ret;
+
+    }
+
+    public FArrayList<E> take(int n) {
+        //return new FArrayList<Integer>( new ArrayList<Integer>( i ) ).zipWithIndex().fold(new FArrayList<E>(), new GetI<Integer, E>(this));
+        ArrayList<E> ret = new ArrayList<E>();
+        for( int i = 0 ; i < n; i++ ) {
+            ret.add(this.arrList.get(i));
+        }
+        return new FArrayList<E>(ret);
+    }
 }

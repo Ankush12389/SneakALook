@@ -3,6 +3,7 @@ package com.ankush.sneakalook;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.StrictMode;
 import android.provider.Telephony;
@@ -22,6 +23,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import android.util.Log;
+
+import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.GridLabelRenderer;
+import com.jjoe64.graphview.ValueDependentColor;
+import com.jjoe64.graphview.Viewport;
+import com.jjoe64.graphview.series.BarGraphSeries;
+import com.jjoe64.graphview.series.DataPoint;
+import com.jjoe64.graphview.series.LineGraphSeries;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -91,7 +100,40 @@ public class MainActivity extends ActionBarActivity {
 
                 //ArrayAdapter adapter = new ArrayAdapter<String>(this, R.layout.activity_listview, fArrInfo.arrList);
                 //lvSMSMsgs.setAdapter(adapter);
+                TextView tw = ( TextView) findViewById(R.id.textView);
+                GraphView graph = (GraphView) findViewById(R.id.graph);
+                DataPoint[] dp = new DataPoint[20];
+                int lSize = fArrInfo.arrList.size();
+                double max = 0;
+                for( int i = 0; i<= 19;i++) {
+                    double num = fArrInfo.arrList.get(i ).getNumber();
+                    max = (num>max) ? num : max;
+                    dp[i] = new DataPoint( i+1, num);
+                }
 
+
+                final double maxY = ( 1 + (int)(max/1000.0))*1000.0;
+                //fArrInfo.take(10).zipWithIndex().map(SMSFilter.toDataPoint()).arrList.toArray(dp);
+                BarGraphSeries<DataPoint> series = new BarGraphSeries<DataPoint>(dp);
+                series.setSpacing(20);
+                final Viewport vp = graph.getViewport();
+                vp.setYAxisBoundsManual(true);
+                vp.setScrollable(true);
+                vp.setMaxY(maxY);
+                series.setValueDependentColor(new ValueDependentColor<DataPoint>() {
+                    @Override
+                    public int get(DataPoint data) {
+                        return Color.rgb(
+                                100 + (int) Math.abs(data.getY() * 155 / maxY),
+                                75,
+                                75
+                        );
+                    }
+                });
+                GridLabelRenderer gLR = graph.getGridLabelRenderer();
+                gLR.setHighlightZeroLines(false);
+                gLR.setNumHorizontalLabels(10);
+                graph.addSeries(series);
             } else {
                 // empty box, no SMS
             }
