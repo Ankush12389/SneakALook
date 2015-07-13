@@ -104,29 +104,43 @@ public class MainActivity extends ActionBarActivity {
                 ArrayList<BarEntry> entries = new ArrayList<>();
                 int lSize = fArrInfo.arrList.size();
                 ArrayList<String> labels = new ArrayList<String>();
+                int[] colors = new int[lSize];
+                int[] fixedColors = new int[] {
+                        Color.RED,
+                        Color.GREEN,
+                        Color.BLUE,
+                        Color.MAGENTA,
+                        Color.YELLOW,
+                        Color.CYAN
+                };
                 for( int i = 0; i< lSize;i++) {
                     SMSInfo smsInfo = fArrInfo.arrList.get(i );
                     double num = smsInfo.getNumber();
                     entries.add(new BarEntry((float)num,i));
                     labels.add(SMSFilter.df.format(smsInfo.getDate()));
+                    colors[i] = fixedColors[( 18 - smsInfo.getDate().getMonth() + fArrInfo.arrList.get(0 ).getDate().getMonth()) %6];
                 }
 
                 //fArrInfo.take(10).zipWithIndex().map(SMSFilter.toDataPoint()).arrList.toArray(dp);
                 BarDataSet series = new BarDataSet(entries, "Withdrawals");
+                graph.getLegend().setEnabled(false);
+
                 BarData data = new BarData(labels, series);
                 series.setDrawValues(false);
                 graph.setData(data) ;
                 graph.setDescription("");
-                series.setColor(0xffff6666);
+                series.setColors(colors);
                 XAxis xaxis = graph.getXAxis();
                 xaxis.setPosition(XAxis.XAxisPosition.BOTTOM);
                 xaxis.setDrawGridLines(false);
+
                 YAxis yaxisRight = graph.getAxisRight();
                 yaxisRight.setDrawAxisLine(false);
                 yaxisRight.setDrawLabels(false);
                 YAxis yaxisLeft = graph.getAxisLeft();
                 yaxisLeft.setGridColor(0xffaaaaaa);
                 series.setBarSpacePercent(20);
+
                 graph.setOnChartValueSelectedListener(new SMSChartValueSelectedListener(lvSMSMsgs, tw));
             } else {
                 // empty box, no SMS

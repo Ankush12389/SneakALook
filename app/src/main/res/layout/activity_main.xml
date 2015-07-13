@@ -33,6 +33,7 @@
         android:id="@+id/graph"
         android:layout_width="match_parent"
         android:layout_below="@+id/textView"
+        android:paddingBottom="15dp"
         android:layout_height="200dip" />
 
     <ListView
